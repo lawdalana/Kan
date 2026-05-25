@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>House Price Model Comparison</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">KAN example code</p>
+          <h1>House Price Model Comparison</h1>
+        </div>
+        <dl class="dataset-summary" aria-label="Dataset summary">
+          <div>
+            <dt>Rows</dt>
+            <dd id="dataset-rows">-</dd>
+          </div>
+          <div>
+            <dt>Features</dt>
+            <dd id="dataset-attributes">-</dd>
+          </div>
+          <div>
+            <dt>Target</dt>
+            <dd id="dataset-target">-</dd>
+          </div>
+        </dl>
+      </header>
+
+      <section class="metric-grid" id="model-metrics" aria-label="Model metrics"></section>
+
+      <section class="panel">
+        <div class="section-heading">
+          <div>
+            <h2>Accuracy and Latency</h2>
+            <p>Static results generated from the same holdout split.</p>
+          </div>
+        </div>
+        <div class="chart" id="comparison-chart" aria-label="Accuracy and latency chart"></div>
+      </section>
+
+      <section class="panel">
+        <div class="section-heading">
+          <div>
+            <h2>Sample Predictions</h2>
+            <p>Five holdout rows per model with predicted price bands.</p>
+          </div>
+        </div>
+        <div class="sample-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Model</th>
+                <th>Overall quality</th>
+                <th>Living area</th>
+                <th>Actual</th>
+                <th>Predicted</th>
+              </tr>
+            </thead>
+            <tbody id="sample-body"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+    <script src="comparison-data.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

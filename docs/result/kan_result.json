@@ -1,0 +1,126 @@
+{
+  "accuracy": 0.774,
+  "classes": [
+    "budget",
+    "standard",
+    "premium"
+  ],
+  "description": "Additive univariate piecewise classifier inspired by KAN feature functions.",
+  "features": [
+    "OverallQual",
+    "GrLivArea",
+    "GarageCars",
+    "TotalBsmtSF",
+    "YearBuilt",
+    "FullBath",
+    "LotArea",
+    "1stFlrSF",
+    "2ndFlrSF"
+  ],
+  "latency_ms": 0.0776,
+  "model": "KAN",
+  "sample_predictions": [
+    {
+      "actual": "premium",
+      "input": {
+        "1stFlrSF": 1470,
+        "2ndFlrSF": 1160,
+        "FullBath": 2,
+        "GarageCars": 3,
+        "GrLivArea": 2630,
+        "LotArea": 9200,
+        "OverallQual": 8,
+        "TotalBsmtSF": 1470,
+        "YearBuilt": 1998
+      },
+      "predicted": "premium",
+      "probabilities": {
+        "budget": 0.0,
+        "premium": 0.999973,
+        "standard": 2.7e-05
+      }
+    },
+    {
+      "actual": "budget",
+      "input": {
+        "1stFlrSF": 984,
+        "2ndFlrSF": 620,
+        "FullBath": 2,
+        "GarageCars": 2,
+        "GrLivArea": 1604,
+        "LotArea": 10998,
+        "OverallQual": 5,
+        "TotalBsmtSF": 984,
+        "YearBuilt": 1941
+      },
+      "predicted": "standard",
+      "probabilities": {
+        "budget": 0.38617,
+        "premium": 0.015075,
+        "standard": 0.598755
+      }
+    },
+    {
+      "actual": "standard",
+      "input": {
+        "1stFlrSF": 1429,
+        "2ndFlrSF": 0,
+        "FullBath": 1,
+        "GarageCars": 2,
+        "GrLivArea": 1429,
+        "LotArea": 14585,
+        "OverallQual": 6,
+        "TotalBsmtSF": 1144,
+        "YearBuilt": 1960
+      },
+      "predicted": "standard",
+      "probabilities": {
+        "budget": 0.006093,
+        "premium": 0.003349,
+        "standard": 0.990557
+      }
+    },
+    {
+      "actual": "budget",
+      "input": {
+        "1stFlrSF": 626,
+        "2ndFlrSF": 591,
+        "FullBath": 1,
+        "GarageCars": 1,
+        "GrLivArea": 1217,
+        "LotArea": 10762,
+        "OverallQual": 6,
+        "TotalBsmtSF": 626,
+        "YearBuilt": 1980
+      },
+      "predicted": "budget",
+      "probabilities": {
+        "budget": 0.67218,
+        "premium": 1e-06,
+        "standard": 0.327819
+      }
+    },
+    {
+      "actual": "premium",
+      "input": {
+        "1stFlrSF": 901,
+        "2ndFlrSF": 901,
+        "FullBath": 1,
+        "GarageCars": 1,
+        "GrLivArea": 1802,
+        "LotArea": 7588,
+        "OverallQual": 7,
+        "TotalBsmtSF": 793,
+        "YearBuilt": 1920
+      },
+      "predicted": "budget",
+      "probabilities": {
+        "budget": 0.550707,
+        "premium": 0.007384,
+        "standard": 0.441909
+      }
+    }
+  ],
+  "test_rows": 292,
+  "train_rows": 1168
+}

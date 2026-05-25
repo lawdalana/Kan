@@ -1,0 +1,126 @@
+{
+  "accuracy": 0.7808,
+  "classes": [
+    "budget",
+    "standard",
+    "premium"
+  ],
+  "description": "MLPClassifier baseline over selected numeric house features.",
+  "features": [
+    "OverallQual",
+    "GrLivArea",
+    "GarageCars",
+    "TotalBsmtSF",
+    "YearBuilt",
+    "FullBath",
+    "LotArea",
+    "1stFlrSF",
+    "2ndFlrSF"
+  ],
+  "latency_ms": 1.0468,
+  "model": "DNN",
+  "sample_predictions": [
+    {
+      "actual": "premium",
+      "input": {
+        "1stFlrSF": 1470,
+        "2ndFlrSF": 1160,
+        "FullBath": 2,
+        "GarageCars": 3,
+        "GrLivArea": 2630,
+        "LotArea": 9200,
+        "OverallQual": 8,
+        "TotalBsmtSF": 1470,
+        "YearBuilt": 1998
+      },
+      "predicted": "premium",
+      "probabilities": {
+        "budget": 2.7e-05,
+        "premium": 0.997858,
+        "standard": 0.002115
+      }
+    },
+    {
+      "actual": "budget",
+      "input": {
+        "1stFlrSF": 984,
+        "2ndFlrSF": 620,
+        "FullBath": 2,
+        "GarageCars": 2,
+        "GrLivArea": 1604,
+        "LotArea": 10998,
+        "OverallQual": 5,
+        "TotalBsmtSF": 984,
+        "YearBuilt": 1941
+      },
+      "predicted": "standard",
+      "probabilities": {
+        "budget": 0.30142,
+        "premium": 0.014144,
+        "standard": 0.684436
+      }
+    },
+    {
+      "actual": "standard",
+      "input": {
+        "1stFlrSF": 1429,
+        "2ndFlrSF": 0,
+        "FullBath": 1,
+        "GarageCars": 2,
+        "GrLivArea": 1429,
+        "LotArea": 14585,
+        "OverallQual": 6,
+        "TotalBsmtSF": 1144,
+        "YearBuilt": 1960
+      },
+      "predicted": "standard",
+      "probabilities": {
+        "budget": 0.071434,
+        "premium": 0.075873,
+        "standard": 0.852693
+      }
+    },
+    {
+      "actual": "budget",
+      "input": {
+        "1stFlrSF": 626,
+        "2ndFlrSF": 591,
+        "FullBath": 1,
+        "GarageCars": 1,
+        "GrLivArea": 1217,
+        "LotArea": 10762,
+        "OverallQual": 6,
+        "TotalBsmtSF": 626,
+        "YearBuilt": 1980
+      },
+      "predicted": "budget",
+      "probabilities": {
+        "budget": 0.639623,
+        "premium": 0.000396,
+        "standard": 0.359981
+      }
+    },
+    {
+      "actual": "premium",
+      "input": {
+        "1stFlrSF": 901,
+        "2ndFlrSF": 901,
+        "FullBath": 1,
+        "GarageCars": 1,
+        "GrLivArea": 1802,
+        "LotArea": 7588,
+        "OverallQual": 7,
+        "TotalBsmtSF": 793,
+        "YearBuilt": 1920
+      },
+      "predicted": "standard",
+      "probabilities": {
+        "budget": 0.148682,
+        "premium": 0.022113,
+        "standard": 0.829205
+      }
+    }
+  ],
+  "test_rows": 292,
+  "train_rows": 1168
+}

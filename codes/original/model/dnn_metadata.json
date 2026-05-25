@@ -1,0 +1,35 @@
+{
+  "classes": [
+    "budget",
+    "standard",
+    "premium"
+  ],
+  "features": [
+    "OverallQual",
+    "GrLivArea",
+    "GarageCars",
+    "TotalBsmtSF",
+    "YearBuilt",
+    "FullBath",
+    "LotArea",
+    "1stFlrSF",
+    "2ndFlrSF"
+  ],
+  "medians": {
+    "1stFlrSF": 1087.0,
+    "2ndFlrSF": 0.0,
+    "FullBath": 2.0,
+    "GarageCars": 2.0,
+    "GrLivArea": 1470.0,
+    "LotArea": 9525.0,
+    "OverallQual": 6.0,
+    "TotalBsmtSF": 995.0,
+    "YearBuilt": 1972.0
+  },
+  "model": "DNN",
+  "price_thresholds": [
+    140000.0,
+    190000.0
+  ],
+  "target": "SalePrice"
+}

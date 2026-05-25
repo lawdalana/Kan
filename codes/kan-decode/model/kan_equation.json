@@ -1,0 +1,322 @@
+{
+  "bins": 5,
+  "classes": [
+    "budget",
+    "standard",
+    "premium"
+  ],
+  "description": "Decoded piecewise additive equation exported from the KAN artifact.",
+  "features": [
+    "OverallQual",
+    "GrLivArea",
+    "GarageCars",
+    "TotalBsmtSF",
+    "YearBuilt",
+    "FullBath",
+    "LotArea",
+    "1stFlrSF",
+    "2ndFlrSF"
+  ],
+  "medians": {
+    "1stFlrSF": 1087.0,
+    "2ndFlrSF": 0.0,
+    "FullBath": 2.0,
+    "GarageCars": 2.0,
+    "GrLivArea": 1470.0,
+    "LotArea": 9525.0,
+    "OverallQual": 6.0,
+    "TotalBsmtSF": 995.0,
+    "YearBuilt": 1972.0
+  },
+  "model": "KAN-equation",
+  "price_thresholds": [
+    140000.0,
+    190000.0
+  ],
+  "priors": {
+    "budget": -1.071651936291148,
+    "premium": -1.1175783744170713,
+    "standard": -1.1071886705679355
+  },
+  "terms": {
+    "1stFlrSF": {
+      "breakpoints": [
+        848.0,
+        1003.0,
+        1180.0,
+        1490.0
+      ],
+      "weights": [
+        {
+          "budget": 0.48136214,
+          "premium": -1.41862157,
+          "standard": 0.10388656
+        },
+        {
+          "budget": 0.49152814,
+          "premium": -0.62417067,
+          "standard": -0.22099806
+        },
+        {
+          "budget": 0.06949991,
+          "premium": -0.20734704,
+          "standard": 0.10503665
+        },
+        {
+          "budget": -0.78126196,
+          "premium": 0.13108338,
+          "standard": 0.35288707
+        },
+        {
+          "budget": -1.55896652,
+          "premium": 0.82423056,
+          "standard": -0.59544302
+        }
+      ]
+    },
+    "2ndFlrSF": {
+      "breakpoints": [
+        0.0,
+        473.0,
+        804.0
+      ],
+      "weights": [
+        {
+          "budget": 0.14473088,
+          "premium": -0.20153745,
+          "standard": 0.01909489
+        },
+        {
+          "budget": 0.79134997,
+          "premium": -1.30278975,
+          "standard": -0.75356367
+        },
+        {
+          "budget": 0.06949991,
+          "premium": -0.71289561,
+          "standard": 0.3576274
+        },
+        {
+          "budget": -1.34765743,
+          "premium": 0.77174038,
+          "standard": -0.48544212
+        }
+      ]
+    },
+    "FullBath": {
+      "breakpoints": [
+        1.0,
+        2.0
+      ],
+      "weights": [
+        {
+          "budget": 0.56020539,
+          "premium": -1.76722234,
+          "standard": 0.0415464
+        },
+        {
+          "budget": -0.95978039,
+          "premium": 0.50925439,
+          "standard": -0.01800326
+        },
+        {
+          "budget": -2.32954545,
+          "premium": 0.85187521,
+          "standard": -0.50224924
+        }
+      ]
+    },
+    "GarageCars": {
+      "breakpoints": [
+        1.0,
+        2.0
+      ],
+      "weights": [
+        {
+          "budget": 0.79851557,
+          "premium": -2.70013395,
+          "standard": -0.42051734
+        },
+        {
+          "budget": -0.64838697,
+          "premium": 0.11165177,
+          "standard": 0.32024761
+        },
+        {
+          "budget": -1.88585912,
+          "premium": 0.99328066,
+          "standard": -1.62717884
+        }
+      ]
+    },
+    "GrLivArea": {
+      "breakpoints": [
+        1068.0,
+        1342.0,
+        1582.0,
+        1888.0
+      ],
+      "weights": [
+        {
+          "budget": 0.88170645,
+          "premium": -4.35048177,
+          "standard": -0.67199202
+        },
+        {
+          "budget": 0.24798269,
+          "premium": -1.71142444,
+          "standard": 0.41825202
+        },
+        {
+          "budget": -0.50035957,
+          "premium": -0.18737035,
+          "standard": 0.45554122
+        },
+        {
+          "budget": -0.87004768,
+          "premium": 0.43700998,
+          "standard": 0.05796914
+        },
+        {
+          "budget": -1.30113742,
+          "premium": 0.89018853,
+          "standard": -1.0985466
+        }
+      ]
+    },
+    "LotArea": {
+      "breakpoints": [
+        7153.0,
+        8800.0,
+        10200.0,
+        12182.0
+      ],
+      "weights": [
+        {
+          "budget": 0.54102369,
+          "premium": -0.98739647,
+          "standard": -0.1309755
+        },
+        {
+          "budget": 0.27642063,
+          "premium": -0.58928165,
+          "standard": 0.10503665
+        },
+        {
+          "budget": -0.03122475,
+          "premium": -0.12249943,
+          "standard": 0.13623953
+        },
+        {
+          "budget": -0.44516449,
+          "premium": 0.30347858,
+          "standard": 0.02115516
+        },
+        {
+          "budget": -1.05997536,
+          "premium": 0.60957363,
+          "standard": -0.16698839
+        }
+      ]
+    },
+    "OverallQual": {
+      "breakpoints": [
+        5.0,
+        6.0,
+        7.0
+      ],
+      "weights": [
+        {
+          "budget": 0.7351797,
+          "premium": -2.48655985,
+          "standard": -0.24565776
+        },
+        {
+          "budget": -0.29134686,
+          "premium": -0.79196413,
+          "standard": 0.58960626
+        },
+        {
+          "budget": -2.06778706,
+          "premium": 0.64283914,
+          "standard": 0.01250566
+        },
+        {
+          "budget": -3.47164285,
+          "premium": 1.02863089,
+          "standard": -1.49019596
+        }
+      ]
+    },
+    "TotalBsmtSF": {
+      "breakpoints": [
+        764.0,
+        912.0,
+        1090.0,
+        1392.0
+      ],
+      "weights": [
+        {
+          "budget": 0.53683081,
+          "premium": -1.9609899,
+          "standard": 0.10806193
+        },
+        {
+          "budget": 0.34076443,
+          "premium": -0.48366277,
+          "standard": -0.04206735
+        },
+        {
+          "budget": 0.28669721,
+          "premium": -0.30443407,
+          "standard": -0.08805045
+        },
+        {
+          "budget": -0.87845109,
+          "premium": 0.12975119,
+          "standard": 0.38431531
+        },
+        {
+          "budget": -2.08108409,
+          "premium": 0.87174341,
+          "standard": -0.63456038
+        }
+      ]
+    },
+    "YearBuilt": {
+      "breakpoints": [
+        1948.0,
+        1965.0,
+        1983.0,
+        2003.0
+      ],
+      "weights": [
+        {
+          "budget": 0.66618683,
+          "premium": -1.10496401,
+          "standard": -0.38446621
+        },
+        {
+          "budget": 0.47187883,
+          "premium": -1.56941842,
+          "standard": 0.14741283
+        },
+        {
+          "budget": 0.1970339,
+          "premium": -0.73108923,
+          "standard": 0.25277334
+        },
+        {
+          "budget": -1.95282975,
+          "premium": 0.62546987,
+          "standard": 0.02861713
+        },
+        {
+          "budget": -2.55712359,
+          "premium": 0.75328918,
+          "standard": -0.1702116
+        }
+      ]
+    }
+  }
+}
