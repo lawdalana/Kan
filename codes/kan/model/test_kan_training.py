@@ -54,8 +54,14 @@ def test_train_kan_model_writes_json_artifact_and_result(tmp_path):
     assert result["model"] == "KAN"
     assert result["features"] == DEFAULT_FEATURES
     assert 0.0 <= result["accuracy"] <= 1.0
+    assert result["parameter_count"] == 270
 
     reloaded = KanClassifier.load(model_path)
+    assert reloaded.hidden_width == 0
+    assert reloaded.grid == 2
+    assert reloaded.k == 2
     assert reloaded.train_steps > 100
+    assert reloaded.to_dict()["width"] == [len(DEFAULT_FEATURES), 3]
+    assert reloaded.parameter_count() == 270
     sample = load_house_prices(DATASET).rows[0]
     assert reloaded.predict_one(sample)["label"] in ["budget", "standard", "premium"]

@@ -84,6 +84,7 @@ def train_original_model(
         "thresholds": thresholds,
         "classes": CLASSES,
     }
+    parameter_count = _mlp_parameter_count(pipeline.named_steps["mlpclassifier"])
     model_path = Path(model_path)
     model_path.parent.mkdir(parents=True, exist_ok=True)
     dump(artifact, model_path)
@@ -99,6 +100,7 @@ def train_original_model(
         "classes": CLASSES,
         "train_rows": len(train_rows),
         "test_rows": len(test_rows),
+        "parameter_count": parameter_count,
         "accuracy": round(accuracy(y_test, predicted_labels), 4),
         "latency_ms": latency_ms,
         "sample_predictions": _sample_predictions(test_rows[:5], y_test[:5], predictions),
@@ -111,6 +113,7 @@ def train_original_model(
         "classes": CLASSES,
         "price_thresholds": list(thresholds),
         "medians": medians,
+        "parameter_count": parameter_count,
     }
     write_json(metadata_path, metadata)
     write_json(result_path, result)
@@ -171,6 +174,10 @@ def _sample_predictions(
         }
         for row, actual, prediction in zip(rows, expected, predictions)
     ]
+
+
+def _mlp_parameter_count(model: MLPClassifier) -> int:
+    return int(sum(weights.size for weights in model.coefs_) + sum(bias.size for bias in model.intercepts_))
 
 
 def main() -> None:

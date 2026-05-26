@@ -106,8 +106,24 @@ dd {
 }
 
 .metric-card h3 {
-  margin: 0 0 10px;
+  margin: 0 0 8px;
   font-size: 1rem;
+}
+
+.parameter-pill {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  min-height: 24px;
+  margin: 0 0 10px;
+  padding: 3px 8px;
+  border: 1px solid #bfd0ea;
+  border-radius: 6px;
+  background: #eef5ff;
+  color: var(--blue);
+  font-size: 0.78rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
 }
 
 .metric-card p {

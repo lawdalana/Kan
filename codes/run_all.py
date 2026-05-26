@@ -55,6 +55,8 @@ def build_comparison(results: list[dict[str, Any]], dataset_path: str | Path) ->
             "backend": result.get("backend", "sklearn"),
             "grid": result.get("grid"),
             "k": result.get("k"),
+            "parameter_count": result.get("parameter_count"),
+            "source_parameter_count": result.get("source_parameter_count"),
             "accuracy": result["accuracy"],
             "latency_ms": result["latency_ms"],
             "train_rows": result["train_rows"],

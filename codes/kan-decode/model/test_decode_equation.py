@@ -40,6 +40,8 @@ def test_symbolic_equation_exports_ex_rounded_pykan_formulas(tmp_path):
     assert equation["backend"] == "pykan-symbolic-formula"
     assert equation["formula_digits"] == 4
     assert equation["symbolic_weight_simple"] == 0.0
+    assert equation["parameter_count"] == 0
+    assert equation["source_parameter_count"] > 0
     assert len(equation["formula_strings"]) == len(equation["classes"])
     assert {prediction["label"] for prediction in predictions}.issubset(set(equation["classes"]))
     text = text_path.read_text()

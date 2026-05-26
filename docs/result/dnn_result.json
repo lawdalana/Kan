@@ -17,8 +17,9 @@
     "1stFlrSF",
     "2ndFlrSF"
   ],
-  "latency_ms": 0.4857,
+  "latency_ms": 0.5216,
   "model": "DNN",
+  "parameter_count": 899,
   "sample_predictions": [
     {
       "actual": "premium",

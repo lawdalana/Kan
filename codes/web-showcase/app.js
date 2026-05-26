@@ -1,17 +1,30 @@
 const formatPercent = (value) => `${Math.round(value * 1000) / 10}%`;
 const formatLatency = (value) => `${Number(value).toFixed(4)} ms`;
+const formatParams = (model) => {
+  if (model.parameter_count === 0 && model.source_parameter_count) {
+    return `0 / source ${model.source_parameter_count.toLocaleString()}`;
+  }
+  if (Number.isFinite(model.parameter_count)) {
+    return model.parameter_count.toLocaleString();
+  }
+  return "-";
+};
 
 const tag = (label) => `<span class="tag ${label}">${label}</span>`;
 
 async function loadComparison() {
-  if (window.COMPARISON_DATA) {
-    return window.COMPARISON_DATA;
+  try {
+    const response = await fetch("comparison.json", { cache: "no-store" });
+    if (!response.ok) {
+      throw new Error(`Unable to load comparison data: ${response.status}`);
+    }
+    return response.json();
+  } catch (error) {
+    if (window.COMPARISON_DATA) {
+      return window.COMPARISON_DATA;
+    }
+    throw error;
   }
-  const response = await fetch("comparison.json", { cache: "no-store" });
-  if (!response.ok) {
-    throw new Error(`Unable to load comparison data: ${response.status}`);
-  }
-  return response.json();
 }
 
 function renderDataset(dataset) {
@@ -27,6 +40,7 @@ function renderMetrics(models) {
       (model) => `
         <article class="metric-card">
           <h3>${model.name}</h3>
+          <div class="parameter-pill">Params ${formatParams(model)}</div>
           <p>${model.description}</p>
           <div class="metric-row">
             <div>
@@ -36,6 +50,10 @@ function renderMetrics(models) {
             <div>
               <span>Latency</span>
               <strong>${formatLatency(model.latency_ms)}</strong>
+            </div>
+            <div>
+              <span>Params</span>
+              <strong>${formatParams(model)}</strong>
             </div>
           </div>
         </article>

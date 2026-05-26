@@ -6,7 +6,7 @@
     "target": "SalePrice",
     "task": "SalePrice classified into budget, standard, and premium bands"
   },
-  "generated_at": "2026-05-26T00:22:39.230567+00:00",
+  "generated_at": "2026-05-26T01:24:35.586966+00:00",
   "models": [
     {
       "accuracy": 0.7705,
@@ -14,30 +14,36 @@
       "description": "MLPClassifier baseline over selected numeric house features.",
       "grid": null,
       "k": null,
-      "latency_ms": 0.4857,
+      "latency_ms": 0.5216,
       "name": "DNN",
+      "parameter_count": 899,
+      "source_parameter_count": null,
       "test_rows": 292,
       "train_rows": 1168
     },
     {
-      "accuracy": 0.7637,
+      "accuracy": 0.8219,
       "backend": "pykan",
-      "description": "pykan KAN classifier with cubic B-spline edge activations.",
-      "grid": 5,
-      "k": 3,
-      "latency_ms": 0.7133,
+      "description": "pykan direct KAN classifier with B-spline edge activations.",
+      "grid": 2,
+      "k": 2,
+      "latency_ms": 0.6009,
       "name": "KAN",
+      "parameter_count": 270,
+      "source_parameter_count": null,
       "test_rows": 292,
       "train_rows": 1168
     },
     {
-      "accuracy": 0.7911,
+      "accuracy": 0.8288,
       "backend": "pykan-symbolic-formula",
       "description": "pykan symbolic_formula exported with ex_round(..., 4).",
-      "grid": 5,
-      "k": 3,
-      "latency_ms": 0.3496,
+      "grid": 2,
+      "k": 2,
+      "latency_ms": 0.1503,
       "name": "KAN-equation",
+      "parameter_count": 0,
+      "source_parameter_count": 270,
       "test_rows": 292,
       "train_rows": 1168
     }
@@ -166,9 +172,9 @@
           },
           "predicted": "premium",
           "probabilities": {
-            "budget": 3.3e-05,
-            "premium": 0.998912,
-            "standard": 0.001055
+            "budget": 0.0,
+            "premium": 0.99973,
+            "standard": 0.00027
           }
         },
         {
@@ -186,9 +192,9 @@
           },
           "predicted": "standard",
           "probabilities": {
-            "budget": 0.164341,
-            "premium": 0.014027,
-            "standard": 0.821632
+            "budget": 0.428535,
+            "premium": 0.010754,
+            "standard": 0.560711
           }
         },
         {
@@ -206,9 +212,9 @@
           },
           "predicted": "standard",
           "probabilities": {
-            "budget": 0.097664,
-            "premium": 0.099195,
-            "standard": 0.803141
+            "budget": 0.105141,
+            "premium": 0.056389,
+            "standard": 0.83847
           }
         },
         {
@@ -226,9 +232,9 @@
           },
           "predicted": "budget",
           "probabilities": {
-            "budget": 0.546505,
-            "premium": 5.5e-05,
-            "standard": 0.45344
+            "budget": 0.561687,
+            "premium": 0.003187,
+            "standard": 0.435126
           }
         },
         {
@@ -244,11 +250,11 @@
             "TotalBsmtSF": 793,
             "YearBuilt": 1920
           },
-          "predicted": "budget",
+          "predicted": "standard",
           "probabilities": {
-            "budget": 0.519041,
-            "premium": 0.120153,
-            "standard": 0.360806
+            "budget": 0.431252,
+            "premium": 0.065736,
+            "standard": 0.503012
           }
         }
       ]
@@ -271,9 +277,9 @@
           },
           "predicted": "premium",
           "probabilities": {
-            "budget": 5.5e-05,
-            "premium": 0.999623,
-            "standard": 0.000322
+            "budget": 0.0,
+            "premium": 0.999702,
+            "standard": 0.000298
           }
         },
         {
@@ -291,9 +297,9 @@
           },
           "predicted": "standard",
           "probabilities": {
-            "budget": 0.264494,
-            "premium": 0.01478,
-            "standard": 0.720726
+            "budget": 0.418558,
+            "premium": 0.01013,
+            "standard": 0.571312
           }
         },
         {
@@ -311,9 +317,9 @@
           },
           "predicted": "standard",
           "probabilities": {
-            "budget": 0.067968,
-            "premium": 0.049347,
-            "standard": 0.882685
+            "budget": 0.103212,
+            "premium": 0.057537,
+            "standard": 0.839251
           }
         },
         {
@@ -331,9 +337,9 @@
           },
           "predicted": "budget",
           "probabilities": {
-            "budget": 0.599379,
-            "premium": 5.4e-05,
-            "standard": 0.400567
+            "budget": 0.565146,
+            "premium": 0.002836,
+            "standard": 0.432018
           }
         },
         {
@@ -351,9 +357,9 @@
           },
           "predicted": "standard",
           "probabilities": {
-            "budget": 0.393286,
-            "premium": 0.133018,
-            "standard": 0.473696
+            "budget": 0.442521,
+            "premium": 0.062555,
+            "standard": 0.494924
           }
         }
       ]

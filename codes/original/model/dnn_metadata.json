@@ -27,6 +27,7 @@
     "YearBuilt": 1972.0
   },
   "model": "DNN",
+  "parameter_count": 899,
   "price_thresholds": [
     140000.0,
     190000.0

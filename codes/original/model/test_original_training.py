@@ -40,7 +40,9 @@ def test_train_original_model_writes_artifact_metadata_and_result(tmp_path):
     assert mlp.max_iter > 100
     assert mlp.n_iter_ > 100
     assert trainable_params > 672
+    assert result["parameter_count"] == trainable_params
 
     metadata = json.loads(metadata_path.read_text())
     assert metadata["target"] == "SalePrice"
     assert metadata["classes"] == ["budget", "standard", "premium"]
+    assert metadata["parameter_count"] == trainable_params

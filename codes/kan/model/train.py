@@ -43,9 +43,9 @@ RESULT_PATH = RESULT_DIR / "kan_result.json"
 @dataclass(frozen=True)
 class KanClassifier:
     features: list[str] | None = None
-    hidden_width: int = 4
-    grid: int = 5
-    k: int = 3
+    hidden_width: int = 0
+    grid: int = 2
+    k: int = 2
     train_steps: int = 120
     learning_rate: float = 0.03
     batch_size: int = 256
@@ -147,10 +147,11 @@ class KanClassifier:
         return {
             "backend": "pykan",
             "model": "KAN",
-            "description": "pykan KAN classifier with cubic B-spline edge activations.",
+            "description": "pykan direct KAN classifier with B-spline edge activations.",
             "features": self.features,
             "hidden_width": self.hidden_width,
-            "width": [len(self.features), self.hidden_width, len(self.classes or CLASSES)],
+            "width": _kan_width(len(self.features), self.hidden_width, len(self.classes or CLASSES)),
+            "parameter_count": self.parameter_count(),
             "grid": self.grid,
             "k": self.k,
             "train_steps": self.train_steps,
@@ -209,6 +210,9 @@ class KanClassifier:
         object.__setattr__(self, "_runtime_model", model)
         return model
 
+    def parameter_count(self) -> int:
+        return _trainable_parameter_count(self._model())
+
 
 def train_kan_model(
     dataset_path: str | Path = DEFAULT_DATASET_PATH,
@@ -229,12 +233,13 @@ def train_kan_model(
     predicted_labels = [prediction["label"] for prediction in model.predict_many(test_rows)]
     result = {
         "model": "KAN",
-        "description": "pykan KAN classifier with cubic B-spline edge activations.",
+        "description": "pykan direct KAN classifier with B-spline edge activations.",
         "backend": "pykan",
         "features": DEFAULT_FEATURES,
         "classes": CLASSES,
         "grid": model.grid,
         "k": model.k,
+        "parameter_count": model.parameter_count(),
         "train_rows": len(train_rows),
         "test_rows": len(test_rows),
         "accuracy": round(accuracy(expected, predicted_labels), 4),
@@ -256,7 +261,7 @@ def _build_pykan_model(
     speed_mode: bool = True,
 ) -> Any:
     model = KAN(
-        width=[input_width, hidden_width, output_width],
+        width=_kan_width(input_width, hidden_width, output_width),
         grid=grid,
         k=k,
         seed=seed,
@@ -268,6 +273,18 @@ def _build_pykan_model(
         model.speed()
     model.eval()
     return model
+
+
+def _kan_width(input_width: int, hidden_width: int, output_width: int) -> list[int]:
+    if hidden_width < 0:
+        raise ValueError("hidden_width must be zero or positive")
+    if hidden_width == 0:
+        return [input_width, output_width]
+    return [input_width, hidden_width, output_width]
+
+
+def _trainable_parameter_count(model: Any) -> int:
+    return int(sum(parameter.numel() for parameter in model.parameters() if parameter.requires_grad))
 
 
 def _fit_pykan_model(

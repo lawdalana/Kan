@@ -1,12 +1,12 @@
 {
-  "accuracy": 0.7637,
+  "accuracy": 0.8219,
   "backend": "pykan",
   "classes": [
     "budget",
     "standard",
     "premium"
   ],
-  "description": "pykan KAN classifier with cubic B-spline edge activations.",
+  "description": "pykan direct KAN classifier with B-spline edge activations.",
   "features": [
     "OverallQual",
     "GrLivArea",
@@ -18,10 +18,11 @@
     "1stFlrSF",
     "2ndFlrSF"
   ],
-  "grid": 5,
-  "k": 3,
-  "latency_ms": 0.7133,
+  "grid": 2,
+  "k": 2,
+  "latency_ms": 0.6009,
   "model": "KAN",
+  "parameter_count": 270,
   "sample_predictions": [
     {
       "actual": "premium",
@@ -38,9 +39,9 @@
       },
       "predicted": "premium",
       "probabilities": {
-        "budget": 3.3e-05,
-        "premium": 0.998912,
-        "standard": 0.001055
+        "budget": 0.0,
+        "premium": 0.99973,
+        "standard": 0.00027
       }
     },
     {
@@ -58,9 +59,9 @@
       },
       "predicted": "standard",
       "probabilities": {
-        "budget": 0.164341,
-        "premium": 0.014027,
-        "standard": 0.821632
+        "budget": 0.428535,
+        "premium": 0.010754,
+        "standard": 0.560711
       }
     },
     {
@@ -78,9 +79,9 @@
       },
       "predicted": "standard",
       "probabilities": {
-        "budget": 0.097664,
-        "premium": 0.099195,
-        "standard": 0.803141
+        "budget": 0.105141,
+        "premium": 0.056389,
+        "standard": 0.83847
       }
     },
     {
@@ -98,9 +99,9 @@
       },
       "predicted": "budget",
       "probabilities": {
-        "budget": 0.546505,
-        "premium": 5.5e-05,
-        "standard": 0.45344
+        "budget": 0.561687,
+        "premium": 0.003187,
+        "standard": 0.435126
       }
     },
     {
@@ -116,11 +117,11 @@
         "TotalBsmtSF": 793,
         "YearBuilt": 1920
       },
-      "predicted": "budget",
+      "predicted": "standard",
       "probabilities": {
-        "budget": 0.519041,
-        "premium": 0.120153,
-        "standard": 0.360806
+        "budget": 0.431252,
+        "premium": 0.065736,
+        "standard": 0.503012
       }
     }
   ],
