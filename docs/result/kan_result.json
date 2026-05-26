@@ -1,11 +1,12 @@
 {
-  "accuracy": 0.774,
+  "accuracy": 0.7637,
+  "backend": "pykan",
   "classes": [
     "budget",
     "standard",
     "premium"
   ],
-  "description": "Additive univariate piecewise classifier inspired by KAN feature functions.",
+  "description": "pykan KAN classifier with cubic B-spline edge activations.",
   "features": [
     "OverallQual",
     "GrLivArea",
@@ -17,7 +18,9 @@
     "1stFlrSF",
     "2ndFlrSF"
   ],
-  "latency_ms": 0.0776,
+  "grid": 5,
+  "k": 3,
+  "latency_ms": 0.7133,
   "model": "KAN",
   "sample_predictions": [
     {
@@ -35,9 +38,9 @@
       },
       "predicted": "premium",
       "probabilities": {
-        "budget": 0.0,
-        "premium": 0.999973,
-        "standard": 2.7e-05
+        "budget": 3.3e-05,
+        "premium": 0.998912,
+        "standard": 0.001055
       }
     },
     {
@@ -55,9 +58,9 @@
       },
       "predicted": "standard",
       "probabilities": {
-        "budget": 0.38617,
-        "premium": 0.015075,
-        "standard": 0.598755
+        "budget": 0.164341,
+        "premium": 0.014027,
+        "standard": 0.821632
       }
     },
     {
@@ -75,9 +78,9 @@
       },
       "predicted": "standard",
       "probabilities": {
-        "budget": 0.006093,
-        "premium": 0.003349,
-        "standard": 0.990557
+        "budget": 0.097664,
+        "premium": 0.099195,
+        "standard": 0.803141
       }
     },
     {
@@ -95,9 +98,9 @@
       },
       "predicted": "budget",
       "probabilities": {
-        "budget": 0.67218,
-        "premium": 1e-06,
-        "standard": 0.327819
+        "budget": 0.546505,
+        "premium": 5.5e-05,
+        "standard": 0.45344
       }
     },
     {
@@ -115,9 +118,9 @@
       },
       "predicted": "budget",
       "probabilities": {
-        "budget": 0.550707,
-        "premium": 0.007384,
-        "standard": 0.441909
+        "budget": 0.519041,
+        "premium": 0.120153,
+        "standard": 0.360806
       }
     }
   ],

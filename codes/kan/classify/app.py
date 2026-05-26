@@ -15,7 +15,11 @@ from codes.kan.model.train import MODEL_PATH, KanClassifier, train_kan_model
 def create_predictor() -> KanClassifier:
     if not MODEL_PATH.exists():
         train_kan_model()
-    return KanClassifier.load(MODEL_PATH)
+    try:
+        return KanClassifier.load(MODEL_PATH)
+    except (KeyError, ValueError):
+        train_kan_model()
+        return KanClassifier.load(MODEL_PATH)
 
 
 def main() -> None:

@@ -1,46 +1,18 @@
-KAN-equation classifier
-score[class] = prior[class] + sum(piecewise_feature_weight[class])
+KAN-equation classifier exported from pykan symbolic_formula
+Export call: ex_round(model.symbolic_formula()[0][0], 4) for the first class logit, repeated per class.
+Formulas use scaled feature variables after min/max scaling to [-1, 1].
+Symbolic library: x, x^2, x^3, x^4, exp, log, sqrt, tanh, sin, abs
 
-prior[budget] = -1.07165194
-prior[premium] = -1.11757837
-prior[standard] = -1.10718867
+x_1 = scaled OverallQual
+x_2 = scaled GrLivArea
+x_3 = scaled GarageCars
+x_4 = scaled TotalBsmtSF
+x_5 = scaled YearBuilt
+x_6 = scaled FullBath
+x_7 = scaled LotArea
+x_8 = scaled 1stFlrSF
+x_9 = scaled 2ndFlrSF
 
-if OverallQual <= 5.0 add {budget: 0.73517970, standard: -0.24565776, premium: -2.48655985}
-if 5.0 < OverallQual <= 6.0 add {budget: -0.29134686, standard: 0.58960626, premium: -0.79196413}
-if 6.0 < OverallQual <= 7.0 add {budget: -2.06778706, standard: 0.01250566, premium: 0.64283914}
-if OverallQual > 7.0 add {budget: -3.47164285, standard: -1.49019596, premium: 1.02863089}
-if GrLivArea <= 1068.0 add {budget: 0.88170645, standard: -0.67199202, premium: -4.35048177}
-if 1068.0 < GrLivArea <= 1342.0 add {budget: 0.24798269, standard: 0.41825202, premium: -1.71142444}
-if 1342.0 < GrLivArea <= 1582.0 add {budget: -0.50035957, standard: 0.45554122, premium: -0.18737035}
-if 1582.0 < GrLivArea <= 1888.0 add {budget: -0.87004768, standard: 0.05796914, premium: 0.43700998}
-if GrLivArea > 1888.0 add {budget: -1.30113742, standard: -1.09854660, premium: 0.89018853}
-if GarageCars <= 1.0 add {budget: 0.79851557, standard: -0.42051734, premium: -2.70013395}
-if 1.0 < GarageCars <= 2.0 add {budget: -0.64838697, standard: 0.32024761, premium: 0.11165177}
-if GarageCars > 2.0 add {budget: -1.88585912, standard: -1.62717884, premium: 0.99328066}
-if TotalBsmtSF <= 764.0 add {budget: 0.53683081, standard: 0.10806193, premium: -1.96098990}
-if 764.0 < TotalBsmtSF <= 912.0 add {budget: 0.34076443, standard: -0.04206735, premium: -0.48366277}
-if 912.0 < TotalBsmtSF <= 1090.0 add {budget: 0.28669721, standard: -0.08805045, premium: -0.30443407}
-if 1090.0 < TotalBsmtSF <= 1392.0 add {budget: -0.87845109, standard: 0.38431531, premium: 0.12975119}
-if TotalBsmtSF > 1392.0 add {budget: -2.08108409, standard: -0.63456038, premium: 0.87174341}
-if YearBuilt <= 1948.0 add {budget: 0.66618683, standard: -0.38446621, premium: -1.10496401}
-if 1948.0 < YearBuilt <= 1965.0 add {budget: 0.47187883, standard: 0.14741283, premium: -1.56941842}
-if 1965.0 < YearBuilt <= 1983.0 add {budget: 0.19703390, standard: 0.25277334, premium: -0.73108923}
-if 1983.0 < YearBuilt <= 2003.0 add {budget: -1.95282975, standard: 0.02861713, premium: 0.62546987}
-if YearBuilt > 2003.0 add {budget: -2.55712359, standard: -0.17021160, premium: 0.75328918}
-if FullBath <= 1.0 add {budget: 0.56020539, standard: 0.04154640, premium: -1.76722234}
-if 1.0 < FullBath <= 2.0 add {budget: -0.95978039, standard: -0.01800326, premium: 0.50925439}
-if FullBath > 2.0 add {budget: -2.32954545, standard: -0.50224924, premium: 0.85187521}
-if LotArea <= 7153.0 add {budget: 0.54102369, standard: -0.13097550, premium: -0.98739647}
-if 7153.0 < LotArea <= 8800.0 add {budget: 0.27642063, standard: 0.10503665, premium: -0.58928165}
-if 8800.0 < LotArea <= 10200.0 add {budget: -0.03122475, standard: 0.13623953, premium: -0.12249943}
-if 10200.0 < LotArea <= 12182.0 add {budget: -0.44516449, standard: 0.02115516, premium: 0.30347858}
-if LotArea > 12182.0 add {budget: -1.05997536, standard: -0.16698839, premium: 0.60957363}
-if 1stFlrSF <= 848.0 add {budget: 0.48136214, standard: 0.10388656, premium: -1.41862157}
-if 848.0 < 1stFlrSF <= 1003.0 add {budget: 0.49152814, standard: -0.22099806, premium: -0.62417067}
-if 1003.0 < 1stFlrSF <= 1180.0 add {budget: 0.06949991, standard: 0.10503665, premium: -0.20734704}
-if 1180.0 < 1stFlrSF <= 1490.0 add {budget: -0.78126196, standard: 0.35288707, premium: 0.13108338}
-if 1stFlrSF > 1490.0 add {budget: -1.55896652, standard: -0.59544302, premium: 0.82423056}
-if 2ndFlrSF <= 0.0 add {budget: 0.14473088, standard: 0.01909489, premium: -0.20153745}
-if 0.0 < 2ndFlrSF <= 473.0 add {budget: 0.79134997, standard: -0.75356367, premium: -1.30278975}
-if 473.0 < 2ndFlrSF <= 804.0 add {budget: 0.06949991, standard: 0.35762740, premium: -0.71289561}
-if 2ndFlrSF > 804.0 add {budget: -1.34765743, standard: -0.48544212, premium: 0.77174038}
+budget logit = 0.2202*sin(0.0541*(-5.5594*x_3 - 0.4118)**2 + 0.0026*(-8.756*x_7 - 9.7654)**2 + 2.7655*sqrt(2.5586*x_8 + 9.6006) + 1.1184*sin(2.976*x_1 - 1.5701) - 0.6564*sin(5.2166*x_5 - 7.2101) + 4.0955*sin(4.6784*x_6 + 4.7532) + 1.1654*sin(3.2055*x_9 + 0.6059) + 1.2568*tanh(5.0558*x_2 + 2.1774) + 1.0001*tanh(2.8984*x_4 + 0.9228) - 6.8077) - 3.3558*sin(-0.036*log(9.8006 - 9.8*x_6) - 0.3929*sin(1.4098*x_1 + 2.7967) + 0.1178*tanh(3.3546*x_2 + 1.6804) + 0.2017*tanh(2.5355*x_3 + 0.8165) + 0.2448*tanh(1.6581*x_4 + 0.3634) + 0.361*tanh(2.1354*x_5 - 1.176) + 0.6791*tanh(1.8141*x_7 + 1.6074) + 0.2148*tanh(2.1415*x_8 + 0.3606) + 0.1265*tanh(4.2001*x_9 + 1.352) + 6.9768) + 1.776*tanh(0.3785*log(9.1354 - 7.3306*x_5) + 1.4198*sin(3.0547*x_2 + 4.6013) - 4.0752*sin(1.0524*x_8 + 7.8047) + 0.5163*sin(3.0312*x_9 - 7.9786) - 1.3514*tanh(2.2055*x_1 + 0.2447) - 0.6768*tanh(5.8*x_7 + 5.532) + 0.3601*Abs(6.288*x_4 - 0.6044) - 1141.723 + 1142.6881*exp(-0.0005*x_3)) + 0.1569*Abs(1.6767*log(8.766*x_8 + 9.98) + 0.6949*log(5.0646*x_9 + 6.4376) - 4.9947*sin(6.704*x_3 + 9.6585) - 2.2751*sin(4.1727*x_4 + 5.5971) - 2.1248*sin(5.6734*x_5 - 0.802) + 1.3222*sin(3.336*x_6 + 9.9892) + 7.0985*tanh(1.0791*x_1 + 0.5815) + 2.2602*tanh(2.8002*x_2 + 1.52) - 8.6452 - 0.4475*exp(-3.0282*x_7)) + 0.2007
+standard logit = -0.7943*sin(0.5127*log(8.766*x_8 + 9.98) + 0.2125*log(5.0646*x_9 + 6.4376) - 1.5272*sin(6.704*x_3 + 9.6585) - 0.6956*sin(4.1727*x_4 + 5.5971) - 0.6497*sin(5.6734*x_5 - 0.802) + 0.4043*sin(3.336*x_6 + 9.9892) + 2.1705*tanh(1.0791*x_1 + 0.5815) + 0.6911*tanh(2.8002*x_2 + 1.52) - 1.8845 - 0.1368*exp(-3.0282*x_7)) - 1.3163*tanh(0.0178*(-5.5594*x_3 - 0.4118)**2 + 0.0008*(-8.756*x_7 - 9.7654)**2 + 0.9086*sqrt(2.5586*x_8 + 9.6006) + 0.3675*sin(2.976*x_1 - 1.5701) - 0.2157*sin(5.2166*x_5 - 7.2101) + 1.3456*sin(4.6784*x_6 + 4.7532) + 0.3829*sin(3.2055*x_9 + 0.6059) + 0.4129*tanh(5.0558*x_2 + 2.1774) + 0.3286*tanh(2.8984*x_4 + 0.9228) - 1.9842) - 0.1854*Abs(0.0001*(-2.3507*x_6 - 5.6824)**4 + 0.909*log(9.1354 - 7.3306*x_5) + 3.4096*sin(3.0547*x_2 + 4.6013) - 9.7867*sin(1.0524*x_8 + 7.8047) + 1.24*sin(3.0312*x_9 - 7.9786) - 3.2454*tanh(2.2055*x_1 + 0.2447) - 1.6254*tanh(5.8*x_7 + 5.532) + 0.8647*Abs(6.288*x_4 - 0.6044) - 2742.5642 + 2744.1725*exp(-0.0005*x_3)) - 0.0166*Abs(-1.0304*log(9.8006 - 9.8*x_6) - 11.2546*sin(1.4098*x_1 + 2.7967) + 3.3727*tanh(3.3546*x_2 + 1.6804) + 5.7772*tanh(2.5355*x_3 + 0.8165) + 7.0112*tanh(1.6581*x_4 + 0.3634) + 10.34*tanh(2.1354*x_5 - 1.176) + 19.4525*tanh(1.8141*x_7 + 1.6074) + 6.1517*tanh(2.1415*x_8 + 0.3606) + 3.6242*tanh(4.2001*x_9 + 1.352) - 4.8842) + 1.1794
+premium logit = 3.9461*sin(-0.0332*log(9.8006 - 9.8*x_6) - 0.3632*sin(1.4098*x_1 + 2.7967) + 0.1088*tanh(3.3546*x_2 + 1.6804) + 0.1864*tanh(2.5355*x_3 + 0.8165) + 0.2262*tanh(1.6581*x_4 + 0.3634) + 0.3337*tanh(2.1354*x_5 - 1.176) + 0.6277*tanh(1.8141*x_7 + 1.6074) + 0.1985*tanh(2.1415*x_8 + 0.3606) + 0.117*tanh(4.2001*x_9 + 1.352) + 0.6811) + 1.7687*sin(0.2789*log(8.766*x_8 + 9.98) + 0.1156*log(5.0646*x_9 + 6.4376) - 0.8309*sin(6.704*x_3 + 9.6585) - 0.3785*sin(4.1727*x_4 + 5.5971) - 0.3535*sin(5.6734*x_5 - 0.802) + 0.22*sin(3.336*x_6 + 9.9892) + 1.1809*tanh(1.0791*x_1 + 0.5815) + 0.376*tanh(2.8002*x_2 + 1.52) - 6.5587 - 0.0744*exp(-3.0282*x_7)) + 0.2893*Abs(0.5507*log(9.1354 - 7.3306*x_5) + 2.0655*sin(3.0547*x_2 + 4.6013) - 5.9287*sin(1.0524*x_8 + 7.8047) + 0.7512*sin(3.0312*x_9 - 7.9786) - 1.9661*tanh(2.2055*x_1 + 0.2447) - 0.9847*tanh(5.8*x_7 + 5.532) + 0.5238*Abs(6.288*x_4 - 0.6044) - 1663.466 + 1662.399*exp(-0.0005*x_3)) - 0.1452*Abs(0.1744*(-5.5594*x_3 - 0.4118)**2 + 0.0082*(-8.756*x_7 - 9.7654)**2 + 8.9122*sqrt(2.5586*x_8 + 9.6006) + 3.6043*sin(2.976*x_1 - 1.5701) - 2.1153*sin(5.2166*x_5 - 7.2101) + 13.1983*sin(4.6784*x_6 + 4.7532) + 3.7556*sin(3.2055*x_9 + 0.6059) + 4.0502*tanh(5.0558*x_2 + 2.1774) + 3.2228*tanh(2.8984*x_4 + 0.9228) - 40.0138) - 2.6143

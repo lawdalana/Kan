@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import sys
+import warnings
 from pathlib import Path
 from typing import Any
 
@@ -11,6 +12,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from joblib import dump, load
+from sklearn.exceptions import ConvergenceWarning
 from sklearn.neural_network import MLPClassifier
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
@@ -35,6 +37,8 @@ from codes.common import (
 MODEL_PATH = Path(__file__).with_name("dnn_model.joblib")
 METADATA_PATH = Path(__file__).with_name("dnn_metadata.json")
 RESULT_PATH = RESULT_DIR / "dnn_result.json"
+DNN_HIDDEN_LAYER_SIZES = (32, 16)
+DNN_MAX_ITER = 150
 
 
 def train_original_model(
@@ -57,18 +61,21 @@ def train_original_model(
     pipeline = make_pipeline(
         StandardScaler(),
         MLPClassifier(
-            hidden_layer_sizes=(16, 8),
+            hidden_layer_sizes=DNN_HIDDEN_LAYER_SIZES,
             activation="relu",
             solver="adam",
             alpha=0.01,
             learning_rate_init=0.01,
-            max_iter=500,
-            early_stopping=True,
-            n_iter_no_change=25,
+            max_iter=DNN_MAX_ITER,
+            early_stopping=False,
+            n_iter_no_change=DNN_MAX_ITER + 1,
+            tol=0.0,
             random_state=42,
         ),
     )
-    pipeline.fit(x_train, [label_to_index[label] for label in y_train])
+    with warnings.catch_warnings():
+        warnings.filterwarnings("ignore", category=ConvergenceWarning)
+        pipeline.fit(x_train, [label_to_index[label] for label in y_train])
 
     artifact = {
         "pipeline": pipeline,
@@ -81,7 +88,9 @@ def train_original_model(
     model_path.parent.mkdir(parents=True, exist_ok=True)
     dump(artifact, model_path)
 
-    predictions, latency_ms = measure_latency_ms(lambda: predict_with_artifact(artifact, test_rows[:5]))
+    predictions, latency_ms = measure_latency_ms(
+        lambda: predict_with_artifact(artifact, test_rows[:5]), repeats=100, warmups=10
+    )
     predicted_labels = [prediction["label"] for prediction in predict_with_artifact(artifact, test_rows)]
     result = {
         "model": "DNN",

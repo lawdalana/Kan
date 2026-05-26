@@ -4,6 +4,7 @@ import csv
 import json
 import math
 import random
+import statistics
 import time
 from dataclasses import dataclass
 from pathlib import Path
@@ -162,11 +163,21 @@ def softmax(scores: dict[str, float]) -> dict[str, float]:
     return probabilities
 
 
-def measure_latency_ms(action: Callable[[], Any]) -> tuple[Any, float]:
-    start = time.perf_counter()
-    result = action()
-    elapsed = (time.perf_counter() - start) * 1000
-    return result, round(elapsed, 4)
+def measure_latency_ms(
+    action: Callable[[], Any], repeats: int = 1, warmups: int = 0
+) -> tuple[Any, float]:
+    if repeats < 1:
+        raise ValueError("repeats must be at least 1")
+    for _ in range(warmups):
+        action()
+
+    result: Any = None
+    timings: list[float] = []
+    for _ in range(repeats):
+        start = time.perf_counter()
+        result = action()
+        timings.append((time.perf_counter() - start) * 1000)
+    return result, round(statistics.median(timings), 4)
 
 
 def write_json(path: str | Path, payload: dict[str, Any]) -> None:

@@ -6,28 +6,37 @@ window.COMPARISON_DATA = {
     "target": "SalePrice",
     "task": "SalePrice classified into budget, standard, and premium bands"
   },
-  "generated_at": "2026-05-25T17:59:31.850398+00:00",
+  "generated_at": "2026-05-26T00:22:39.230567+00:00",
   "models": [
     {
-      "accuracy": 0.7808,
+      "accuracy": 0.7705,
+      "backend": "sklearn",
       "description": "MLPClassifier baseline over selected numeric house features.",
-      "latency_ms": 1.0468,
+      "grid": null,
+      "k": null,
+      "latency_ms": 0.4857,
       "name": "DNN",
       "test_rows": 292,
       "train_rows": 1168
     },
     {
-      "accuracy": 0.774,
-      "description": "Additive univariate piecewise classifier inspired by KAN feature functions.",
-      "latency_ms": 0.0776,
+      "accuracy": 0.7637,
+      "backend": "pykan",
+      "description": "pykan KAN classifier with cubic B-spline edge activations.",
+      "grid": 5,
+      "k": 3,
+      "latency_ms": 0.7133,
       "name": "KAN",
       "test_rows": 292,
       "train_rows": 1168
     },
     {
-      "accuracy": 0.774,
-      "description": "Pure Python equation evaluator decoded from the KAN piecewise functions.",
-      "latency_ms": 0.0944,
+      "accuracy": 0.7911,
+      "backend": "pykan-symbolic-formula",
+      "description": "pykan symbolic_formula exported with ex_round(..., 4).",
+      "grid": 5,
+      "k": 3,
+      "latency_ms": 0.3496,
       "name": "KAN-equation",
       "test_rows": 292,
       "train_rows": 1168
@@ -52,9 +61,9 @@ window.COMPARISON_DATA = {
           },
           "predicted": "premium",
           "probabilities": {
-            "budget": 2.7e-05,
-            "premium": 0.997858,
-            "standard": 0.002115
+            "budget": 0.0,
+            "premium": 0.999995,
+            "standard": 5e-06
           }
         },
         {
@@ -72,9 +81,9 @@ window.COMPARISON_DATA = {
           },
           "predicted": "standard",
           "probabilities": {
-            "budget": 0.30142,
-            "premium": 0.014144,
-            "standard": 0.684436
+            "budget": 0.113064,
+            "premium": 0.141605,
+            "standard": 0.74533
           }
         },
         {
@@ -92,9 +101,9 @@ window.COMPARISON_DATA = {
           },
           "predicted": "standard",
           "probabilities": {
-            "budget": 0.071434,
-            "premium": 0.075873,
-            "standard": 0.852693
+            "budget": 0.015013,
+            "premium": 0.00027,
+            "standard": 0.984717
           }
         },
         {
@@ -110,11 +119,11 @@ window.COMPARISON_DATA = {
             "TotalBsmtSF": 626,
             "YearBuilt": 1980
           },
-          "predicted": "budget",
+          "predicted": "standard",
           "probabilities": {
-            "budget": 0.639623,
-            "premium": 0.000396,
-            "standard": 0.359981
+            "budget": 0.072829,
+            "premium": 0.0,
+            "standard": 0.927171
           }
         },
         {
@@ -132,9 +141,9 @@ window.COMPARISON_DATA = {
           },
           "predicted": "standard",
           "probabilities": {
-            "budget": 0.148682,
-            "premium": 0.022113,
-            "standard": 0.829205
+            "budget": 0.052003,
+            "premium": 0.0,
+            "standard": 0.947997
           }
         }
       ]
@@ -157,9 +166,9 @@ window.COMPARISON_DATA = {
           },
           "predicted": "premium",
           "probabilities": {
-            "budget": 0.0,
-            "premium": 0.999973,
-            "standard": 2.7e-05
+            "budget": 3.3e-05,
+            "premium": 0.998912,
+            "standard": 0.001055
           }
         },
         {
@@ -177,9 +186,9 @@ window.COMPARISON_DATA = {
           },
           "predicted": "standard",
           "probabilities": {
-            "budget": 0.38617,
-            "premium": 0.015075,
-            "standard": 0.598755
+            "budget": 0.164341,
+            "premium": 0.014027,
+            "standard": 0.821632
           }
         },
         {
@@ -197,9 +206,9 @@ window.COMPARISON_DATA = {
           },
           "predicted": "standard",
           "probabilities": {
-            "budget": 0.006093,
-            "premium": 0.003349,
-            "standard": 0.990557
+            "budget": 0.097664,
+            "premium": 0.099195,
+            "standard": 0.803141
           }
         },
         {
@@ -217,9 +226,9 @@ window.COMPARISON_DATA = {
           },
           "predicted": "budget",
           "probabilities": {
-            "budget": 0.67218,
-            "premium": 1e-06,
-            "standard": 0.327819
+            "budget": 0.546505,
+            "premium": 5.5e-05,
+            "standard": 0.45344
           }
         },
         {
@@ -237,9 +246,9 @@ window.COMPARISON_DATA = {
           },
           "predicted": "budget",
           "probabilities": {
-            "budget": 0.550707,
-            "premium": 0.007384,
-            "standard": 0.441909
+            "budget": 0.519041,
+            "premium": 0.120153,
+            "standard": 0.360806
           }
         }
       ]
@@ -262,9 +271,9 @@ window.COMPARISON_DATA = {
           },
           "predicted": "premium",
           "probabilities": {
-            "budget": 0.0,
-            "premium": 0.999973,
-            "standard": 2.7e-05
+            "budget": 5.5e-05,
+            "premium": 0.999623,
+            "standard": 0.000322
           }
         },
         {
@@ -282,9 +291,9 @@ window.COMPARISON_DATA = {
           },
           "predicted": "standard",
           "probabilities": {
-            "budget": 0.38617,
-            "premium": 0.015075,
-            "standard": 0.598755
+            "budget": 0.264494,
+            "premium": 0.01478,
+            "standard": 0.720726
           }
         },
         {
@@ -302,9 +311,9 @@ window.COMPARISON_DATA = {
           },
           "predicted": "standard",
           "probabilities": {
-            "budget": 0.006093,
-            "premium": 0.003349,
-            "standard": 0.990557
+            "budget": 0.067968,
+            "premium": 0.049347,
+            "standard": 0.882685
           }
         },
         {
@@ -322,9 +331,9 @@ window.COMPARISON_DATA = {
           },
           "predicted": "budget",
           "probabilities": {
-            "budget": 0.67218,
-            "premium": 1e-06,
-            "standard": 0.327819
+            "budget": 0.599379,
+            "premium": 5.4e-05,
+            "standard": 0.400567
           }
         },
         {
@@ -340,11 +349,11 @@ window.COMPARISON_DATA = {
             "TotalBsmtSF": 793,
             "YearBuilt": 1920
           },
-          "predicted": "budget",
+          "predicted": "standard",
           "probabilities": {
-            "budget": 0.550707,
-            "premium": 0.007384,
-            "standard": 0.441909
+            "budget": 0.393286,
+            "premium": 0.133018,
+            "standard": 0.473696
           }
         }
       ]

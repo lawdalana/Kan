@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 import argparse
+import contextlib
+import io
 import math
 import sys
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
@@ -11,6 +13,10 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[3]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
+
+import torch
+import torch.nn as nn
+from kan import KAN
 
 from codes.common import (
     CLASSES,
@@ -23,11 +29,10 @@ from codes.common import (
     labels_for_rows,
     load_house_prices,
     measure_latency_ms,
+    read_json,
     selected_feature_snapshot,
-    softmax,
     split_rows,
     write_json,
-    read_json,
 )
 
 
@@ -38,95 +43,126 @@ RESULT_PATH = RESULT_DIR / "kan_result.json"
 @dataclass(frozen=True)
 class KanClassifier:
     features: list[str] | None = None
-    bins: int = 5
+    hidden_width: int = 4
+    grid: int = 5
+    k: int = 3
+    train_steps: int = 120
+    learning_rate: float = 0.03
+    batch_size: int = 256
+    seed: int = 42
     classes: list[str] | None = None
     price_thresholds: list[float] | None = None
     medians: dict[str, float] | None = None
-    priors: dict[str, float] | None = None
-    terms: dict[str, dict[str, Any]] | None = None
+    minimums: dict[str, float] | None = None
+    maximums: dict[str, float] | None = None
+    state_dict: dict[str, Any] | None = None
+    _runtime_model: Any = field(default=None, compare=False, repr=False)
 
     def fit(self, rows: list[dict[str, Any]]) -> "KanClassifier":
+        torch.set_default_dtype(torch.float32)
+        torch.manual_seed(self.seed)
         features = list(self.features or DEFAULT_FEATURES)
         classes = list(self.classes or CLASSES)
         price_thresholds = list(compute_price_thresholds(rows))
         labels = labels_for_rows(rows, price_thresholds)
         matrix, medians = extract_features(rows, features)
+        minimums, maximums = _feature_bounds(matrix, features)
 
-        label_counts = {label: labels.count(label) for label in classes}
-        total = len(labels) + len(classes)
-        priors = {
-            label: math.log((label_counts[label] + 1) / total) for label in classes
+        train_input = torch.tensor(
+            _scale_matrix(matrix, features, minimums, maximums), dtype=torch.float32
+        )
+        label_to_index = {label: index for index, label in enumerate(classes)}
+        train_label = torch.tensor([label_to_index[label] for label in labels], dtype=torch.long)
+        dataset = {
+            "train_input": train_input,
+            "train_label": train_label,
+            "test_input": train_input,
+            "test_label": train_label,
         }
-        terms: dict[str, dict[str, Any]] = {}
 
-        for column, feature in enumerate(features):
-            values = [row[column] for row in matrix]
-            breakpoints = _quantile_breakpoints(values, self.bins)
-            bin_counts = [
-                {label: 0 for label in classes} for _ in range(len(breakpoints) + 1)
-            ]
-            for value, label in zip(values, labels):
-                bin_counts[_bin_index(value, breakpoints)][label] += 1
+        model = _build_pykan_model(
+            input_width=len(features),
+            hidden_width=self.hidden_width,
+            output_width=len(classes),
+            grid=self.grid,
+            k=self.k,
+            seed=self.seed,
+        )
+        _fit_pykan_model(
+            model=model,
+            dataset=dataset,
+            train_steps=self.train_steps,
+            learning_rate=self.learning_rate,
+            batch_size=min(self.batch_size, len(rows)),
+        )
 
-            weights: list[dict[str, float]] = []
-            for counts in bin_counts:
-                bin_total = sum(counts.values()) + len(classes)
-                weights.append(
-                    {
-                        label: round(
-                            math.log((counts[label] + 1) / bin_total) - priors[label],
-                            8,
-                        )
-                        for label in classes
-                    }
-                )
-
-            terms[feature] = {"breakpoints": breakpoints, "weights": weights}
-        return KanClassifier(
+        artifact = KanClassifier(
             features=features,
-            bins=self.bins,
+            hidden_width=self.hidden_width,
+            grid=self.grid,
+            k=self.k,
+            train_steps=self.train_steps,
+            learning_rate=self.learning_rate,
+            batch_size=self.batch_size,
+            seed=self.seed,
             classes=classes,
             price_thresholds=price_thresholds,
             medians=medians,
-            priors=priors,
-            terms=terms,
+            minimums=minimums,
+            maximums=maximums,
+            state_dict=_state_dict_to_json(model.state_dict()),
         )
+        object.__setattr__(artifact, "_runtime_model", model)
+        return artifact
 
     def predict_one(self, sample: dict[str, Any]) -> dict[str, Any]:
-        if not self.features or not self.medians or not self.priors or not self.terms:
-            raise ValueError("KAN model has not been fitted")
-
-        matrix, _ = extract_features([sample], self.features, self.medians)
-        values = matrix[0]
-        scores = dict(self.priors)
-        for feature, value in zip(self.features, values):
-            term = self.terms[feature]
-            index = _bin_index(value, term["breakpoints"])
-            for label, weight in term["weights"][index].items():
-                scores[label] += weight
-
-        probabilities = softmax(scores)
-        label = max(probabilities, key=probabilities.get)
-        return {
-            "label": label,
-            "probabilities": {name: round(probabilities[name], 6) for name in self.classes},
-        }
+        return self.predict_many([sample])[0]
 
     def predict_many(self, samples: list[dict[str, Any]]) -> list[dict[str, Any]]:
-        return [self.predict_one(sample) for sample in samples]
+        if not self.features or not self.medians or not self.minimums or not self.maximums:
+            raise ValueError("KAN model has not been fitted")
+
+        matrix, _ = extract_features(samples, self.features, self.medians)
+        scaled = _scale_matrix(matrix, self.features, self.minimums, self.maximums)
+        inputs = torch.tensor(scaled, dtype=torch.float32)
+        model = self._model()
+
+        with torch.no_grad():
+            logits = model(inputs)
+            probabilities = torch.softmax(logits, dim=1).detach().cpu().tolist()
+            labels = torch.argmax(logits, dim=1).detach().cpu().tolist()
+
+        classes = self.classes or CLASSES
+        output: list[dict[str, Any]] = []
+        for label_index, probability_row in zip(labels, probabilities):
+            probability_map = _probability_map(classes, probability_row)
+            output.append({"label": classes[int(label_index)], "probabilities": probability_map})
+        return output
 
     def to_dict(self) -> dict[str, Any]:
-        if not self.features or not self.medians or not self.priors or not self.terms:
+        if not self.features or not self.medians or not self.minimums or not self.maximums:
             raise ValueError("KAN model has not been fitted")
+        if self.state_dict is None:
+            raise ValueError("KAN model state is missing")
         return {
+            "backend": "pykan",
             "model": "KAN",
+            "description": "pykan KAN classifier with cubic B-spline edge activations.",
             "features": self.features,
-            "bins": self.bins,
+            "hidden_width": self.hidden_width,
+            "width": [len(self.features), self.hidden_width, len(self.classes or CLASSES)],
+            "grid": self.grid,
+            "k": self.k,
+            "train_steps": self.train_steps,
+            "learning_rate": self.learning_rate,
+            "batch_size": self.batch_size,
+            "seed": self.seed,
             "classes": self.classes or CLASSES,
             "price_thresholds": self.price_thresholds,
             "medians": self.medians,
-            "priors": self.priors,
-            "terms": self.terms,
+            "minimums": self.minimums,
+            "maximums": self.maximums,
+            "state_dict": self.state_dict,
         }
 
     def save(self, path: str | Path) -> None:
@@ -136,17 +172,42 @@ class KanClassifier:
     def from_dict(cls, payload: dict[str, Any]) -> "KanClassifier":
         return cls(
             features=list(payload["features"]),
-            bins=int(payload["bins"]),
+            hidden_width=int(payload["hidden_width"]),
+            grid=int(payload["grid"]),
+            k=int(payload["k"]),
+            train_steps=int(payload.get("train_steps", 120)),
+            learning_rate=float(payload.get("learning_rate", 0.03)),
+            batch_size=int(payload.get("batch_size", 256)),
+            seed=int(payload.get("seed", 42)),
             classes=list(payload["classes"]),
             price_thresholds=list(payload["price_thresholds"]),
             medians={key: float(value) for key, value in payload["medians"].items()},
-            priors={key: float(value) for key, value in payload["priors"].items()},
-            terms=payload["terms"],
+            minimums={key: float(value) for key, value in payload["minimums"].items()},
+            maximums={key: float(value) for key, value in payload["maximums"].items()},
+            state_dict=payload["state_dict"],
         )
 
     @classmethod
     def load(cls, path: str | Path) -> "KanClassifier":
         return cls.from_dict(read_json(path))
+
+    def _model(self) -> Any:
+        if self._runtime_model is not None:
+            return self._runtime_model
+        if not self.features or not self.classes or self.state_dict is None:
+            raise ValueError("KAN model state is missing")
+        model = _build_pykan_model(
+            input_width=len(self.features),
+            hidden_width=self.hidden_width,
+            output_width=len(self.classes),
+            grid=self.grid,
+            k=self.k,
+            seed=self.seed,
+        )
+        model.load_state_dict(_state_dict_from_json(self.state_dict))
+        model.eval()
+        object.__setattr__(self, "_runtime_model", model)
+        return model
 
 
 def train_kan_model(
@@ -158,17 +219,22 @@ def train_kan_model(
     dataset = load_house_prices(dataset_path)
     rows = dataset.rows[:limit_rows] if limit_rows else dataset.rows
     train_rows, test_rows = split_rows(rows)
-    model = KanClassifier(features=DEFAULT_FEATURES, bins=5).fit(train_rows)
+    model = KanClassifier(features=DEFAULT_FEATURES).fit(train_rows)
     model.save(model_path)
 
     expected = labels_for_rows(test_rows, model.price_thresholds or [])
-    predictions, latency_ms = measure_latency_ms(lambda: model.predict_many(test_rows[:5]))
+    predictions, latency_ms = measure_latency_ms(
+        lambda: model.predict_many(test_rows[:5]), repeats=100, warmups=10
+    )
     predicted_labels = [prediction["label"] for prediction in model.predict_many(test_rows)]
     result = {
         "model": "KAN",
-        "description": "Additive univariate piecewise classifier inspired by KAN feature functions.",
+        "description": "pykan KAN classifier with cubic B-spline edge activations.",
+        "backend": "pykan",
         "features": DEFAULT_FEATURES,
         "classes": CLASSES,
+        "grid": model.grid,
+        "k": model.k,
         "train_rows": len(train_rows),
         "test_rows": len(test_rows),
         "accuracy": round(accuracy(expected, predicted_labels), 4),
@@ -177,6 +243,52 @@ def train_kan_model(
     }
     write_json(result_path, result)
     return result
+
+
+def _build_pykan_model(
+    input_width: int,
+    hidden_width: int,
+    output_width: int,
+    grid: int,
+    k: int,
+    seed: int,
+    symbolic_enabled: bool = False,
+    speed_mode: bool = True,
+) -> Any:
+    model = KAN(
+        width=[input_width, hidden_width, output_width],
+        grid=grid,
+        k=k,
+        seed=seed,
+        device="cpu",
+        auto_save=False,
+        symbolic_enabled=symbolic_enabled,
+    )
+    if speed_mode:
+        model.speed()
+    model.eval()
+    return model
+
+
+def _fit_pykan_model(
+    model: Any,
+    dataset: dict[str, torch.Tensor],
+    train_steps: int,
+    learning_rate: float,
+    batch_size: int,
+) -> None:
+    with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+        model.fit(
+            dataset,
+            opt="Adam",
+            steps=train_steps,
+            lr=learning_rate,
+            loss_fn=nn.CrossEntropyLoss(),
+            batch=batch_size,
+            log=train_steps + 1,
+            update_grid=False,
+        )
+    model.eval()
 
 
 def _sample_predictions(
@@ -193,28 +305,59 @@ def _sample_predictions(
     ]
 
 
-def _quantile_breakpoints(values: list[float], bins: int) -> list[float]:
-    if bins < 2:
-        raise ValueError("bins must be at least 2")
-    ordered = sorted(values)
-    breakpoints: list[float] = []
-    for index in range(1, bins):
-        position = min(len(ordered) - 1, (len(ordered) * index) // bins)
-        value = round(float(ordered[position]), 6)
-        if not breakpoints or value > breakpoints[-1]:
-            breakpoints.append(value)
-    return breakpoints
+def _feature_bounds(
+    matrix: list[list[float]], features: list[str]
+) -> tuple[dict[str, float], dict[str, float]]:
+    minimums: dict[str, float] = {}
+    maximums: dict[str, float] = {}
+    columns = list(zip(*matrix))
+    for feature, values in zip(features, columns):
+        minimums[feature] = float(min(values))
+        maximums[feature] = float(max(values))
+    return minimums, maximums
 
 
-def _bin_index(value: float, breakpoints: list[float]) -> int:
-    for index, breakpoint in enumerate(breakpoints):
-        if value <= breakpoint:
-            return index
-    return len(breakpoints)
+def _scale_matrix(
+    matrix: list[list[float]],
+    features: list[str],
+    minimums: dict[str, float],
+    maximums: dict[str, float],
+) -> list[list[float]]:
+    scaled: list[list[float]] = []
+    for row in matrix:
+        scaled_row: list[float] = []
+        for feature, value in zip(features, row):
+            low = minimums[feature]
+            high = maximums[feature]
+            if math.isclose(high, low):
+                scaled_row.append(0.0)
+                continue
+            scaled_row.append(max(-1.0, min(1.0, 2 * (value - low) / (high - low) - 1)))
+        scaled.append(scaled_row)
+    return scaled
+
+
+def _state_dict_to_json(state_dict: dict[str, torch.Tensor]) -> dict[str, Any]:
+    return {key: value.detach().cpu().tolist() for key, value in state_dict.items()}
+
+
+def _state_dict_from_json(payload: dict[str, Any]) -> dict[str, torch.Tensor]:
+    return {key: torch.tensor(value, dtype=torch.float32) for key, value in payload.items()}
+
+
+def _probability_map(classes: list[str], probability_row: list[float]) -> dict[str, float]:
+    values: dict[str, float] = {}
+    running = 0.0
+    for index, class_name in enumerate(classes[:-1]):
+        value = round(float(probability_row[index]), 6)
+        values[class_name] = value
+        running += value
+    values[classes[-1]] = round(max(0.0, 1.0 - running), 6)
+    return values
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Train and evaluate the KAN house price classifier.")
+    parser = argparse.ArgumentParser(description="Train and evaluate the pykan house price classifier.")
     parser.add_argument("--dataset", type=Path, default=DEFAULT_DATASET_PATH)
     parser.add_argument("--model", type=Path, default=MODEL_PATH)
     parser.add_argument("--result", type=Path, default=RESULT_PATH)

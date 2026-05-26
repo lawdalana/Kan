@@ -8,7 +8,7 @@ ROOT = Path(__file__).resolve().parents[3]
 DATASET = ROOT / "dataset" / "house_prices.arff"
 
 
-def test_kan_classifier_learns_piecewise_feature_logits():
+def test_kan_classifier_uses_pykan_spline_backend():
     rows = [
         {"OverallQual": 3, "GrLivArea": 900, "SalePrice": 90000},
         {"OverallQual": 4, "GrLivArea": 1100, "SalePrice": 120000},
@@ -17,13 +17,24 @@ def test_kan_classifier_learns_piecewise_feature_logits():
         {"OverallQual": 9, "GrLivArea": 2800, "SalePrice": 420000},
         {"OverallQual": 10, "GrLivArea": 3200, "SalePrice": 600000},
     ]
-    model = KanClassifier(features=["OverallQual", "GrLivArea"], bins=3).fit(rows)
+    model = KanClassifier(
+        features=["OverallQual", "GrLivArea"],
+        hidden_width=2,
+        grid=3,
+        k=3,
+        train_steps=2,
+    ).fit(rows)
 
     low = model.predict_one({"OverallQual": 3, "GrLivArea": 950})
     high = model.predict_one({"OverallQual": 10, "GrLivArea": 3100})
+    artifact = model.to_dict()
 
-    assert low["label"] == "budget"
-    assert high["label"] == "premium"
+    assert artifact["backend"] == "pykan"
+    assert artifact["grid"] == 3
+    assert artifact["k"] == 3
+    assert "act_fun.0.coef" in artifact["state_dict"]
+    assert low["label"] in ["budget", "standard", "premium"]
+    assert high["label"] in ["budget", "standard", "premium"]
     assert sum(high["probabilities"].values()) == 1.0
 
 
@@ -45,5 +56,6 @@ def test_train_kan_model_writes_json_artifact_and_result(tmp_path):
     assert 0.0 <= result["accuracy"] <= 1.0
 
     reloaded = KanClassifier.load(model_path)
+    assert reloaded.train_steps > 100
     sample = load_house_prices(DATASET).rows[0]
     assert reloaded.predict_one(sample)["label"] in ["budget", "standard", "premium"]

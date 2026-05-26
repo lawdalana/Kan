@@ -25,7 +25,11 @@ def create_predictor():
         train_kan_model()
     if not decode_equation.EQUATION_PATH.exists():
         decode_equation.decode_kan_model(KAN_MODEL_PATH)
-    return decode_equation.EquationPredictor.from_file(decode_equation.EQUATION_PATH)
+    try:
+        return decode_equation.EquationPredictor.from_file(decode_equation.EQUATION_PATH)
+    except (KeyError, ValueError):
+        decode_equation.decode_kan_model(KAN_MODEL_PATH)
+        return decode_equation.EquationPredictor.from_file(decode_equation.EQUATION_PATH)
 
 
 def main() -> None:
